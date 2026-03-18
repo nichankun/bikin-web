@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "ui-avatars.com", // Tambahkan ini untuk avatar instansi
+      },
+      {
+        protocol: "https",
         hostname: "img.icons8.com",
       },
       {
