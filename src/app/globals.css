@@ -9,6 +9,44 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* --- Warna Brand DevPro (Emerald/Green) --- */
+  --color-brand-50: oklch(0.98 0.02 155);
+  --color-brand-100: oklch(0.95 0.04 155);
+  --color-brand-400: oklch(0.75 0.18 155);
+  --color-brand-500: oklch(0.65 0.2 155); /* Warna Utama */
+  --color-brand-600: oklch(0.55 0.2 155);
+  --color-brand-700: oklch(0.45 0.18 155);
+
+  /* --- Definisi Animasi Custom --- */
+  --animate-blob: blob 7s infinite;
+  --animate-marquee: marquee 30s linear infinite;
+
+  @keyframes blob {
+    0% {
+      transform: translate(0px, 0px) scale(1);
+    }
+    33% {
+      transform: translate(30px, -50px) scale(1.1);
+    }
+    66% {
+      transform: translate(-20px, 20px) scale(0.9);
+    }
+    100% {
+      transform: translate(0px, 0px) scale(1);
+    }
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* --- Sisanya variabel Shadcn kamu --- */
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -121,7 +159,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground selection:bg-brand-500/30;
   }
   html {
     @apply font-sans;
