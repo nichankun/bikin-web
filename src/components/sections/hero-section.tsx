@@ -62,7 +62,7 @@ export function HeroSection() {
               <span className="flex items-center gap-2">
                 <Code2 size={18} className="text-blue-400" /> React.js
               </span>
-              <span className="flex items-center gap-2 text-white">
+              <span className="flex items-center gap-2 text-brand-400">
                 Next.js 16
               </span>
               <span className="flex items-center gap-2">

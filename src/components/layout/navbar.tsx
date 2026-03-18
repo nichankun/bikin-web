@@ -32,7 +32,7 @@ export function Navbar() {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="font-extrabold text-2xl tracking-tighter text-slate-900">
-            DevPro<span className="text-brand-500">.</span>
+            BikinWeb<span className="text-brand-500">.</span>
           </div>
 
           {/* Desktop Links */}
