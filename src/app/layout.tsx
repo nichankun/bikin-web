@@ -3,10 +3,17 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
+/**
+ * ADVANCED PERFORMANCE (Audit Poin 4):
+ * Menggunakan Edge Runtime untuk pemrosesan metadata dan streaming yang lebih cepat
+ * di seluruh node global (Edge Network).
+ */
+export const runtime = "edge";
+
 const geist = Geist({
   subsets: ["latin"],
   variable: "--font-sans",
-  display: "swap", // Penting: Mencegah text invisible saat loading
+  display: "swap", // Mencegah Layout Shift (CLS) dengan swap font
 });
 
 export const metadata: Metadata = {
@@ -26,11 +33,12 @@ export const metadata: Metadata = {
     "Next.js Developer",
     "Web App",
     "Software House Indonesia",
+    "Bikin Web Profesional",
   ],
   authors: [{ name: "DevPro Team" }],
-  // SEO Advanced: Meta tag tambahan (Audit Poin 4)
+  // SEO Advanced: Canonical URL & Alternates
   alternates: {
-    canonical: "https://devpro.id",
+    canonical: "/",
   },
   openGraph: {
     type: "website",
@@ -40,14 +48,31 @@ export const metadata: Metadata = {
     title: "DevPro | Jasa Pembuatan Website & Aplikasi Web",
     description: "Sistem Digital Premium, Hasil Terukur.",
     images: [
-      { url: "/og-image.jpg", width: 1200, height: 630, alt: "DevPro Preview" },
+      {
+        url: "/og-image.jpg", // Fallback jika dynamic OG tidak dimuat
+        width: 1200,
+        height: 630,
+        alt: "DevPro Digital Preview",
+      },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "DevPro Digital",
-    description: "Jasa Pembuatan Website & Web App",
+    description: "Jasa Pembuatan Website & Web App Premium.",
     images: ["/og-image.jpg"],
+  },
+  // Audit Poin 4: Robot configuration yang lebih spesifik
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -55,7 +80,7 @@ export const viewport: Viewport = {
   themeColor: "#0f172a",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 5,
+  maximumScale: 5, // Mendukung Accessibility (A11Y) untuk zoom user
 };
 
 export default function RootLayout({
@@ -66,7 +91,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      suppressHydrationWarning
+      suppressHydrationWarning // Mencegah error mismatch saat menggunakan theme atau font variable
       className={cn("scroll-smooth font-sans", geist.variable)}
     >
       <body className="bg-background text-foreground antialiased selection:bg-brand-500 selection:text-white">
