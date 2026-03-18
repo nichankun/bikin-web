@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
  * Menggunakan Edge Runtime untuk pemrosesan metadata dan streaming yang lebih cepat
  * di seluruh node global (Edge Network).
  */
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 const geist = Geist({
   subsets: ["latin"],
