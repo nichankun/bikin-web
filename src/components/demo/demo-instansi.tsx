@@ -1,5 +1,6 @@
-// src/components/demo/demo-instansi.tsx
 "use client";
+
+import React, { useState } from "react";
 import {
   LayoutDashboard,
   FileText,
@@ -7,252 +8,285 @@ import {
   Users,
   Search,
   Bell,
-  CircleUser,
   Plus,
   FileCheck,
   Clock,
-  ExternalLink,
+  Folder,
+  History,
+  type LucideIcon,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
-export function DemoInstansi() {
-  const recentMinutes = [
-    {
-      title: "Rapat Koordinasi Triwulan II",
-      date: "18 Mar 2026",
-      status: "Terverifikasi",
-      author: "Admin Sekretariat",
-    },
-    {
-      title: "Pembahasan Anggaran Latsar 2026",
-      date: "15 Mar 2026",
-      status: "Draft",
-      author: "Imam Hayatul",
-    },
-    {
-      title: "Evaluasi Sistem E-Notulen",
-      date: "12 Mar 2026",
-      status: "Menunggu",
-      author: "Kabid IT",
-    },
-  ];
+// --- SUB-KOMPONEN INTERNAL ---
 
-  return (
-    <div className="flex h-screen bg-[#F8FAFC] overflow-hidden">
-      {/* Sidebar - Desktop */}
-      <aside className="w-64 bg-slate-900 text-slate-300 hidden lg:flex flex-col border-r border-slate-800">
-        <div className="p-6">
-          <div className="flex items-center gap-3 text-white mb-8">
-            <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center font-bold">
-              D
-            </div>
-            <span className="font-bold tracking-tight text-lg">E-NOTULEN</span>
-          </div>
-
-          <nav className="space-y-1">
-            <NavItem
-              icon={<LayoutDashboard size={18} />}
-              label="Dashboard"
-              active
-            />
-            <NavItem icon={<FileText size={18} />} label="Daftar Notulen" />
-            <NavItem icon={<Archive size={18} />} label="Arsip Digital" />
-            <NavItem icon={<Users size={18} />} label="Manajemen User" />
-          </nav>
-        </div>
-
-        <div className="mt-auto p-6 border-t border-slate-800">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center">
-              <CircleUser size={24} />
-            </div>
-            <div className="overflow-hidden">
-              <p className="text-sm font-bold text-white truncate">
-                Administrator
-              </p>
-              <p className="text-xs text-slate-500 truncate">Sultra Prov.</p>
-            </div>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0">
-        {/* Top Header */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-10">
-          <div className="flex items-center gap-2 text-slate-500 text-sm">
-            <span>Beranda</span>
-            <span>/</span>
-            <span className="font-semibold text-slate-900">
-              Dashboard Statistik
-            </span>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <div className="relative hidden md:block">
-              <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                size={16}
-              />
-              <input
-                type="text"
-                placeholder="Cari notulen..."
-                className="pl-10 pr-4 py-1.5 bg-slate-100 border-transparent rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all w-64"
-              />
-            </div>
-            <button className="text-slate-500 hover:text-slate-900 relative">
-              <Bell size={20} />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
-            </button>
-          </div>
-        </header>
-
-        {/* Dashboard Content */}
-        <div className="p-8 overflow-y-auto">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-            <div>
-              <h1 className="text-2xl font-black text-slate-900">
-                Ringkasan Statistik
-              </h1>
-              <p className="text-slate-500 text-sm">
-                Selamat datang kembali di panel E-Notulen Instansi.
-              </p>
-            </div>
-            <button className="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/20">
-              <Plus size={18} /> Buat Notulen Baru
-            </button>
-          </div>
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-            <StatCard
-              icon={<FileText className="text-indigo-600" />}
-              label="Total Notulen"
-              value="1,248"
-              trend="+12% bulan ini"
-            />
-            <StatCard
-              icon={<Clock className="text-amber-500" />}
-              label="Menunggu Verifikasi"
-              value="14"
-              trend="Prioritas Tinggi"
-            />
-            <StatCard
-              icon={<FileCheck className="text-emerald-500" />}
-              label="Arsip Tervalidasi"
-              value="98%"
-              trend="Sangat Bagus"
-            />
-          </div>
-
-          {/* Recent List Table */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-              <h3 className="font-bold text-slate-900">
-                Notulen Rapat Terbaru
-              </h3>
-              <button className="text-indigo-600 text-sm font-bold flex items-center gap-1 hover:underline">
-                Lihat Semua <ExternalLink size={14} />
-              </button>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 text-slate-500 text-[10px] uppercase font-bold tracking-widest">
-                    <th className="px-6 py-4">Judul Notulen</th>
-                    <th className="px-6 py-4">Tanggal</th>
-                    <th className="px-6 py-4">Penulis</th>
-                    <th className="px-6 py-4 text-right">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {recentMinutes.map((item, i) => (
-                    <tr
-                      key={i}
-                      className="hover:bg-slate-50/50 transition-colors cursor-pointer group"
-                    >
-                      <td className="px-6 py-4 font-semibold text-slate-800 group-hover:text-indigo-600">
-                        {item.title}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-slate-500">
-                        {item.date}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-slate-500">
-                        {item.author}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <span
-                          className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${
-                            item.status === "Terverifikasi"
-                              ? "bg-emerald-100 text-emerald-700"
-                              : item.status === "Draft"
-                                ? "bg-slate-100 text-slate-600"
-                                : "bg-amber-100 text-amber-700"
-                          }`}
-                        >
-                          {item.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-  );
+interface NavItemProps {
+  icon: LucideIcon;
+  label: string;
+  active: boolean;
+  onClick: () => void;
 }
 
-// Sub-components untuk keterbacaan kode
-function NavItem({
-  icon,
-  label,
-  active = false,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  active?: boolean;
-}) {
+function NavItem({ icon: Icon, label, active, onClick }: NavItemProps) {
   return (
-    <div
-      className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all ${
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-bold text-sm ${
         active
-          ? "bg-indigo-600 text-white font-bold"
-          : "hover:bg-slate-800 hover:text-white"
+          ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
+          : "text-slate-400 hover:bg-slate-800 hover:text-white"
       }`}
     >
-      {icon}
-      <span className="text-sm">{label}</span>
-    </div>
+      <Icon size={18} />
+      <span>{label}</span>
+    </button>
   );
 }
 
 function StatCard({
-  icon,
+  icon: Icon,
   label,
   value,
-  trend,
+  color,
 }: {
-  icon: React.ReactNode;
+  icon: LucideIcon;
   label: string;
   value: string;
-  trend: string;
+  color: string;
 }) {
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-      <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center mb-4">
-        {icon}
-      </div>
-      <p className="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">
-        {label}
-      </p>
-      <div className="flex items-end gap-3">
-        <h4 className="text-3xl font-black text-slate-900">{value}</h4>
-        <span className="text-[10px] font-bold text-slate-400 mb-1.5">
-          {trend}
-        </span>
-      </div>
+    <Card className="border-slate-200/60 shadow-sm rounded-2xl overflow-hidden bg-white">
+      <CardContent className="p-6 flex items-center gap-4">
+        <div className={`p-3 rounded-xl ${color}`}>
+          <Icon size={24} />
+        </div>
+        <div>
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">
+            {label}
+          </p>
+          <p className="text-2xl font-black text-slate-900 leading-none">
+            {value}
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// --- KOMPONEN UTAMA ---
+
+export function DemoInstansi() {
+  const [activeTab, setActiveTab] = useState("dashboard");
+
+  return (
+    <div className="flex h-screen bg-[#F8FAFC] text-slate-900 overflow-hidden font-sans">
+      {/* 1. SIDEBAR INTERNAL */}
+      <aside className="w-64 bg-slate-900 shrink-0 hidden md:flex flex-col p-6">
+        <div className="flex items-center gap-3 text-white mb-10 px-2">
+          <div className="size-8 bg-indigo-500 rounded-lg flex items-center justify-center font-black">
+            E
+          </div>
+          <span className="font-black tracking-tight text-lg">E-NOTULEN</span>
+        </div>
+
+        <nav className="flex-1 space-y-2">
+          <NavItem
+            icon={LayoutDashboard}
+            label="Dashboard"
+            active={activeTab === "dashboard"}
+            onClick={() => setActiveTab("dashboard")}
+          />
+          <NavItem
+            icon={FileText}
+            label="Daftar Notulen"
+            active={activeTab === "notulen"}
+            onClick={() => setActiveTab("notulen")}
+          />
+          <NavItem
+            icon={Archive}
+            label="Arsip Digital"
+            active={activeTab === "arsip"}
+            onClick={() => setActiveTab("arsip")}
+          />
+          <NavItem
+            icon={Users}
+            label="User Management"
+            active={activeTab === "users"}
+            onClick={() => setActiveTab("users")}
+          />
+        </nav>
+
+        <div className="mt-auto pt-6 border-t border-slate-800 flex items-center gap-3 px-2 text-white">
+          <div className="size-8 rounded-full bg-slate-700 flex items-center justify-center font-bold text-xs">
+            IH
+          </div>
+          <div className="overflow-hidden">
+            <p className="text-xs font-bold truncate">Imam Hayatul</p>
+            <p className="text-[10px] text-slate-500 truncate">
+              Bapenda Sultra
+            </p>
+          </div>
+        </div>
+      </aside>
+
+      {/* 2. MAIN CONTENT AREA */}
+      <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {/* Header Dashboard */}
+        <header className="h-16 bg-white border-b border-slate-200 shrink-0 flex items-center justify-between px-8 sticky top-0 z-10">
+          <h2 className="text-sm font-bold text-slate-500 uppercase tracking-tighter">
+            Sistem Informasi Notulensi Digital
+          </h2>
+          <div className="flex items-center gap-4">
+            <button className="text-slate-400 hover:text-slate-900">
+              <Bell size={18} />
+            </button>
+            <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200" />
+          </div>
+        </header>
+
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+          {activeTab === "dashboard" && (
+            <div className="space-y-8 animate-in fade-in duration-500">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <h1 className="text-2xl font-black tracking-tight">
+                    Selamat Datang, Imam
+                  </h1>
+                  <p className="text-slate-500 text-sm">
+                    Berikut ringkasan aktivitas notulensi hari ini.
+                  </p>
+                </div>
+                <Button className="bg-indigo-600 hover:bg-indigo-700 rounded-xl font-bold shadow-lg shadow-indigo-600/20">
+                  <Plus className="mr-2 h-4 w-4" /> Notulen Baru
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <StatCard
+                  icon={FileText}
+                  label="Total Notulen"
+                  value="1,248"
+                  color="bg-indigo-50 text-indigo-600"
+                />
+                <StatCard
+                  icon={Clock}
+                  label="Menunggu TTD"
+                  value="12"
+                  color="bg-amber-50 text-amber-500"
+                />
+                <StatCard
+                  icon={FileCheck}
+                  label="Arsip Valid"
+                  value="98%"
+                  color="bg-emerald-50 text-emerald-500"
+                />
+              </div>
+
+              <Card className="border-slate-200/60 shadow-sm rounded-2xl overflow-hidden bg-white">
+                <div className="p-6 border-b flex justify-between items-center">
+                  <div className="flex items-center gap-2 font-bold text-slate-800">
+                    <History size={18} className="text-indigo-600" /> Aktivitas
+                    Terakhir
+                  </div>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm text-left">
+                    <tbody className="divide-y divide-slate-100">
+                      {[
+                        "Rapat Koordinasi Bapenda",
+                        "Evaluasi Anggaran IT",
+                        "Finalisasi Latsar CPNS",
+                      ].map((t) => (
+                        <tr
+                          key={t}
+                          className="hover:bg-slate-50/50 transition-colors"
+                        >
+                          <td className="px-6 py-4 font-semibold text-slate-800">
+                            {t}
+                          </td>
+                          <td className="px-6 py-4 text-slate-500 text-xs">
+                            18 Mar 2026
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest">
+                              SELESAI
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            </div>
+          )}
+
+          {activeTab === "notulen" && (
+            <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
+              <h2 className="text-2xl font-black tracking-tight">
+                Daftar Notulen
+              </h2>
+              <div className="bg-white border rounded-2xl p-4 flex gap-4 shadow-sm">
+                <div className="flex-1 relative">
+                  <Search
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                    size={18}
+                  />
+                  <input
+                    className="w-full pl-10 pr-4 py-2 bg-slate-50 border-none rounded-xl text-sm outline-none"
+                    placeholder="Cari notulen..."
+                  />
+                </div>
+              </div>
+              <div className="bg-white border rounded-3xl h-64 flex items-center justify-center text-slate-400 italic shadow-sm border-dashed">
+                Data notulen siap ditampilkan...
+              </div>
+            </div>
+          )}
+
+          {activeTab === "arsip" && (
+            <div className="space-y-6 animate-in zoom-in-95 duration-500">
+              <h2 className="text-2xl font-black tracking-tight text-slate-900">
+                Arsip Digital
+              </h2>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                {["Keuangan", "Kepegawaian", "Aset Sultra", "Umum"].map((f) => (
+                  <Card
+                    key={f}
+                    className="hover:border-indigo-500 cursor-pointer transition-all group border-slate-200/60 shadow-sm rounded-3xl bg-white"
+                  >
+                    <CardContent className="p-8">
+                      <Folder
+                        className="text-indigo-600 mb-4 group-hover:scale-110 transition-transform"
+                        size={40}
+                        fill="currentColor"
+                        fillOpacity={0.1}
+                      />
+                      <p className="font-bold text-slate-900 truncate">{f}</p>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase mt-1">
+                        24 Files
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === "users" && (
+            <div className="animate-in fade-in duration-500">
+              <h2 className="text-2xl font-black tracking-tight mb-6">
+                Manajemen User
+              </h2>
+              <div className="bg-indigo-50 border border-indigo-100 p-6 rounded-2xl text-indigo-700 text-sm">
+                Modul ini hanya dapat diakses oleh Administrator tingkat
+                Provinsi.
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 }
