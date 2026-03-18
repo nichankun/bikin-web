@@ -12,8 +12,6 @@ export type ContactFormData = z.infer<typeof ContactFormSchema>;
 
 // 3. Fungsi Validasi yang Aman
 export function validateContactForm(data: unknown): ContactFormData {
-  // .parse akan melempar error jika data tidak sesuai schema
-  // Ini jauh lebih aman daripada sekadar mengecek .includes("@")
   const validatedData = ContactFormSchema.parse(data);
 
   return validatedData;
