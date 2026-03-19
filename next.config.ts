@@ -5,16 +5,12 @@ const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 });
 
-/**
- * PRODUCTION SECURITY: Content Security Policy
- * Membatasi sumber script/style agar aman dari injeksi pihak ketiga.
- */
 const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline';
     style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data: https:;
-    font-src 'self';
+    img-src 'self' blob: data: https://images.unsplash.com https://img.icons8.com https://ui-avatars.com https://placehold.co https:;
+    font-src 'self' data:;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
@@ -25,20 +21,16 @@ const cspHeader = `
   .trim();
 
 const nextConfig: NextConfig = {
-  // Solusi Peringatan IP Lokal
-
   allowedDevOrigins: ["192.168.1.5:3000", "localhost:3000"],
 
   images: {
+    dangerouslyAllowSVG: true,
     remotePatterns: [
-      { protocol: "https", hostname: "ui-avatars.com" },
-      { protocol: "https", hostname: "img.icons8.com" },
-      { protocol: "https", hostname: "api.duniagames.co.id" },
-      { protocol: "https", hostname: "static.upstation.media" },
-      { protocol: "https", hostname: "encrypted-tbn0.gstatic.com" },
-      { protocol: "https", hostname: "upload.wikimedia.org" },
-      { protocol: "https", hostname: "images.tokopedia.net" },
-      { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "ui-avatars.com", pathname: "/**" },
+      { protocol: "https", hostname: "img.icons8.com", pathname: "/**" },
+      { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
+      { protocol: "https", hostname: "placehold.co", pathname: "/**" },
+      // Domain eksternal lain yang butuh optimasi bisa ditambah di sini jika benar-benar stabil
     ],
   },
 
@@ -47,6 +39,7 @@ const nextConfig: NextConfig = {
       "lucide-react",
       "framer-motion",
       "@radix-ui/react-icons",
+      "shadcn-ui",
     ],
   },
 
@@ -67,14 +60,15 @@ const nextConfig: NextConfig = {
       {
         source: "/(.*)",
         headers: [
-          { key: "Content-Security-Policy", value: cspHeader }, // Penambahan CSP
+          { key: "Content-Security-Policy", value: cspHeader },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-XSS-Protection", value: "1; mode=block" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {
             key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=()",
+            value:
+              "camera=(), microphone=(), geolocation=(), interest-cohort=()",
           },
         ],
       },

@@ -14,7 +14,78 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// --- SUB-KOMPONEN (Penting untuk struktur yang bersih) ---
+// --- 1. INTERFACES & CONSTANTS (Optimasi Image Link) ---
+
+interface Game {
+  id: string;
+  title: string;
+  img: string;
+  tag?: string;
+  tagColor?: string;
+}
+
+interface Nominal {
+  id: string;
+  label: string;
+  price: string;
+  rawPrice: number;
+}
+
+const POPULAR_GAMES: Game[] = [
+  {
+    id: "mlbb",
+    title: "Mobile Legends",
+    // Menggunakan Unsplash yang stabil
+    img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=500",
+  },
+  {
+    id: "pubgm",
+    title: "PUBG Mobile",
+    img: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?q=80&w=500",
+  },
+  {
+    id: "ff",
+    title: "Free Fire",
+    img: "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=500",
+    tag: "EVENT",
+    tagColor: "bg-[#f472b6]",
+  },
+  {
+    id: "genshin",
+    title: "Genshin Impact",
+    img: "https://images.unsplash.com/photo-1614680376593-902f74cf0d41?q=80&w=500",
+  },
+  {
+    id: "valorant",
+    title: "Valorant",
+    img: "https://images.unsplash.com/photo-1589241062272-c0a000072dfa?q=80&w=500",
+  },
+  {
+    id: "efootball",
+    title: "eFootball 2026",
+    img: "https://images.unsplash.com/photo-1517603951033-2ae7de621244?q=80&w=500",
+    tag: "UPDATE",
+    tagColor: "bg-[#4ade80]",
+  },
+];
+
+const NOMINAL_OPTIONS: Nominal[] = [
+  { id: "172", label: "172 Diamonds", price: "38.900", rawPrice: 38900 },
+  { id: "257", label: "257 Diamonds", price: "58.000", rawPrice: 58000 },
+  { id: "706", label: "706 Diamonds", price: "155.500", rawPrice: 155500 },
+];
+
+const PAYMENT_METHODS = [
+  // Menggunakan placehold.co agar tidak bergantung pada server luar yang sering 404
+  { id: "dana", logo: "https://placehold.co/200x60/ffffff/007aff?text=DANA" },
+  { id: "ovo", logo: "https://placehold.co/200x60/ffffff/4b0082?text=OVO" },
+  {
+    id: "shopeepay",
+    logo: "https://placehold.co/200x60/ffffff/ee4d2d?text=ShopeePay",
+  },
+];
+
+// --- 2. SUB-COMPONENTS (With Image Fallback) ---
 
 function GameCard({
   title,
@@ -22,25 +93,29 @@ function GameCard({
   tag,
   tagColor,
   active,
-}: {
-  title: string;
-  img: string;
-  tag?: string;
-  tagColor?: string;
-  active?: boolean;
-}) {
+}: Game & { active?: boolean }) {
+  // State untuk menangani gambar yang gagal dimuat
+  const [imgSrc, setImgSrc] = useState(img);
+
   return (
     <Link href="#order" className="group relative block">
       <div
         className={`aspect-3/4 rounded-2xl overflow-hidden mb-4 border-2 shadow-xl transition-all duration-300 relative ${active ? "border-[#22d3ee]" : "border-[#2a3b56] group-hover:border-[#22d3ee]"}`}
       >
         <Image
-          src={img}
+          src={imgSrc}
           alt={title}
           fill
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:rotate-1"
+          className="object-cover transition-transform duration-500 group-hover:scale-110 group-hover:rotate-1"
+          sizes="(max-width: 768px) 50vw, 15vw"
+          // Fitur Fallback: Jika gambar mati, ganti ke placeholder
+          onError={() =>
+            setImgSrc(
+              `https://placehold.co/600x800/161e31/22d3ee?text=${title}`,
+            )
+          }
         />
-        <div className="absolute inset-0 bg-linear-to-t from-[#0b1120]/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        <div className="absolute inset-0 bg-linear-to-t from-[#0b1120]/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         <div className="absolute bottom-4 left-4 right-4 bg-[#22d3ee] py-2 px-3 rounded-xl text-center text-[#0b1120] font-black text-[10px] transform translate-y-12 group-hover:translate-y-0 transition-transform tracking-wider">
           TOP UP
         </div>
@@ -59,15 +134,17 @@ function GameCard({
   );
 }
 
-// --- KOMPONEN UTAMA ---
+// --- 3. MAIN COMPONENT ---
 
 export function DemoTopup() {
-  const [selectedNominal, setSelectedNominal] = useState("172");
+  const [selectedNominal, setSelectedNominal] = useState<Nominal>(
+    NOMINAL_OPTIONS[0],
+  );
   const [selectedPayment, setSelectedPayment] = useState("dana");
 
   return (
     <div className="bg-[#0b1120] text-slate-300 font-sans antialiased min-h-screen selection:bg-[#22d3ee] selection:text-[#0b1120]">
-      {/* --- NAVBAR --- */}
+      {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-[#161e31]/80 backdrop-blur-xl border-b border-[#2a3b56]/50">
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -76,7 +153,7 @@ export function DemoTopup() {
               alt="Logo"
               width={40}
               height={40}
-              className="w-10 h-10"
+              priority // Tambahkan priority untuk logo agar muncul instan
             />
             <span className="text-2xl font-extrabold tracking-tighter text-white">
               Drayl<span className="text-[#22d3ee]">Store</span>
@@ -87,10 +164,7 @@ export function DemoTopup() {
             <Link href="#" className="text-[#22d3ee]">
               Home
             </Link>
-            <Link
-              href="#"
-              className="text-slate-400 hover:text-[#22d3ee] transition-colors"
-            >
+            <Link href="#" className="hover:text-[#22d3ee] transition-colors">
               Lacak Pesanan
             </Link>
             <div className="bg-[#161e31]/50 px-4 py-1.5 rounded-full border border-[#2a3b56] flex items-center gap-2">
@@ -99,7 +173,10 @@ export function DemoTopup() {
           </div>
 
           <div className="flex items-center gap-3">
-            <button className="text-slate-400 hover:text-white p-2">
+            <button
+              className="text-slate-400 hover:text-white p-2"
+              aria-label="Search"
+            >
               <Search size={20} />
             </button>
             <Button className="bg-linear-to-r from-[#22d3ee] to-[#818cf8] px-6 py-2 rounded-full text-xs font-black text-[#0b1120] shadow-[0_0_15px_rgba(34,211,238,0.3)] border-none">
@@ -109,14 +186,14 @@ export function DemoTopup() {
         </div>
       </nav>
 
-      {/* --- HERO BANNER --- */}
+      {/* Hero Banner */}
       <header className="py-8 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="relative rounded-[32px] overflow-hidden shadow-2xl border-4 border-[#161e31]">
             <div className="relative h-75 md:h-100">
               <Image
-                src="https://api.duniagames.co.id/api/content/upload/file/4096180351664188933.jpg"
-                alt="Banner"
+                src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200"
+                alt="Promo Banner"
                 fill
                 className="object-cover"
                 priority
@@ -138,7 +215,7 @@ export function DemoTopup() {
         </div>
       </header>
 
-      {/* --- POPULAR SECTION --- */}
+      {/* Popular Section */}
       <section className="max-w-7xl mx-auto px-4 py-12">
         <div className="flex items-center gap-4 mb-10 border-b border-[#2a3b56] pb-6">
           <Image
@@ -151,48 +228,20 @@ export function DemoTopup() {
             Game Terpopuler
           </h2>
         </div>
-
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-          <GameCard
-            title="Mobile Legends"
-            img="https://api.duniagames.co.id/api/content/upload/file/8114337051598842122.jpg"
-            active
-          />
-          <GameCard
-            title="PUBG Mobile"
-            img="https://static.upstation.media/wp-content/uploads/2021/09/27150116/pubg-mobile-india-will-be-called-battlegrounds-mobile-india.jpg"
-          />
-          <GameCard
-            title="Free Fire"
-            img="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6mXUfL_8oR_zQc8hV6E4pG0rYfM1aR6z_Gg&s"
-            tag="EVENT"
-            tagColor="bg-[#f472b6]"
-          />
-          <GameCard
-            title="Genshin Impact"
-            img="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc6_Iu6UvjO9PZc6_0iE9Wj5vU6n5xYpE4vA&s"
-          />
-          <GameCard
-            title="Valorant"
-            img="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_p6vPqYmFmP_h_3pGvP0vP_vP_pP_pP_pP_A&s"
-          />
-          <GameCard
-            title="eFootball 2026"
-            img="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_L-F-r_vP_pP_pP_pP_pP_pP_pP_pP_pP_A&s"
-            tag="UPDATE"
-            tagColor="bg-[#4ade80]"
-          />
+          {POPULAR_GAMES.map((game) => (
+            <GameCard key={game.id} {...game} active={game.id === "mlbb"} />
+          ))}
         </div>
       </section>
 
-      {/* --- ORDER SECTION --- */}
+      {/* Order Section */}
       <section id="order" className="max-w-7xl mx-auto px-4 pb-32">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
           <div className="lg:col-span-2 space-y-8">
-            {/* Step 1 */}
             <div className="bg-[#161e31] p-8 rounded-[32px] border border-[#2a3b56]">
               <div className="flex items-center gap-4 mb-8">
-                <div className="size-10 bg-[#22d3ee] text-[#0b1120] rounded-xl flex items-center justify-center font-black text-xl shadow-[0_0_15px_rgba(34,211,238,0.4)]">
+                <div className="size-10 bg-[#22d3ee] text-[#0b1120] rounded-xl flex items-center justify-center font-black text-xl">
                   1
                 </div>
                 <h2 className="text-xl font-black text-white uppercase tracking-tight">
@@ -214,10 +263,9 @@ export function DemoTopup() {
               </div>
             </div>
 
-            {/* Step 2 */}
             <div className="bg-[#161e31] p-8 rounded-[32px] border border-[#2a3b56]">
               <div className="flex items-center gap-4 mb-8">
-                <div className="size-10 bg-[#22d3ee] text-[#0b1120] rounded-xl flex items-center justify-center font-black text-xl shadow-[0_0_15px_rgba(34,211,238,0.4)]">
+                <div className="size-10 bg-[#22d3ee] text-[#0b1120] rounded-xl flex items-center justify-center font-black text-xl">
                   2
                 </div>
                 <h2 className="text-xl font-black text-white uppercase tracking-tight">
@@ -226,15 +274,11 @@ export function DemoTopup() {
                 <Diamond className="ml-auto text-[#22d3ee]/50" />
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {[
-                  { id: "172", label: "172 Diamonds", price: "38.900" },
-                  { id: "257", label: "257 Diamonds", price: "58.000" },
-                  { id: "706", label: "706 Diamonds", price: "155.500" },
-                ].map((item) => (
+                {NOMINAL_OPTIONS.map((item) => (
                   <button
                     key={item.id}
-                    onClick={() => setSelectedNominal(item.id)}
-                    className={`p-5 rounded-2xl border-2 text-left transition-all relative overflow-hidden ${selectedNominal === item.id ? "bg-[#22d3ee]/10 border-[#22d3ee] shadow-lg shadow-[#22d3ee]/10" : "bg-[#0b1120]/30 border-[#2a3b56] hover:border-[#22d3ee]/50"}`}
+                    onClick={() => setSelectedNominal(item)}
+                    className={`p-5 rounded-2xl border-2 text-left transition-all relative overflow-hidden ${selectedNominal.id === item.id ? "bg-[#22d3ee]/10 border-[#22d3ee]" : "bg-[#0b1120]/30 border-[#2a3b56] hover:border-[#22d3ee]/50"}`}
                   >
                     <span className="block font-black text-white text-base mb-1">
                       {item.label}
@@ -242,7 +286,7 @@ export function DemoTopup() {
                     <span className="text-xs text-[#22d3ee] font-bold">
                       Rp {item.price}
                     </span>
-                    {selectedNominal === item.id && (
+                    {selectedNominal.id === item.id && (
                       <Check
                         className="absolute top-2 right-2 text-[#22d3ee]"
                         size={14}
@@ -253,10 +297,9 @@ export function DemoTopup() {
               </div>
             </div>
 
-            {/* Step 3 */}
             <div className="bg-[#161e31] p-8 rounded-[32px] border border-[#2a3b56]">
               <div className="flex items-center gap-4 mb-8">
-                <div className="size-10 bg-[#22d3ee] text-[#0b1120] rounded-xl flex items-center justify-center font-black text-xl shadow-[0_0_15px_rgba(34,211,238,0.4)]">
+                <div className="size-10 bg-[#22d3ee] text-[#0b1120] rounded-xl flex items-center justify-center font-black text-xl">
                   3
                 </div>
                 <h2 className="text-xl font-black text-white uppercase tracking-tight">
@@ -265,16 +308,16 @@ export function DemoTopup() {
                 <CreditCard className="ml-auto text-[#22d3ee]/50" />
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {["dana", "ovo", "shopeepay"].map((pay) => (
+                {PAYMENT_METHODS.map((pay) => (
                   <button
-                    key={pay}
-                    onClick={() => setSelectedPayment(pay)}
-                    className={`bg-white p-4 rounded-2xl border-2 h-16 flex items-center justify-center relative transition-all ${selectedPayment === pay ? "border-[#22d3ee] shadow-lg shadow-[#22d3ee]/20" : "opacity-40 border-transparent"}`}
+                    key={pay.id}
+                    onClick={() => setSelectedPayment(pay.id)}
+                    className={`bg-white p-4 rounded-2xl border-2 h-16 flex items-center justify-center relative transition-all ${selectedPayment === pay.id ? "border-[#22d3ee] shadow-lg shadow-[#22d3ee]/20" : "opacity-40 border-transparent"}`}
                   >
                     <div className="relative h-6 w-20">
                       <Image
-                        src={`https://upload.wikimedia.org/wikipedia/commons/${pay === "dana" ? "7/72/Logo_dana_blue.svg" : pay === "ovo" ? "e/eb/Logo_ovo_purple.svg" : "i/thumb/e/ec/ShopeePay.svg/1200px-ShopeePay.svg.png"}`}
-                        alt={pay}
+                        src={pay.logo}
+                        alt={pay.id}
                         fill
                         className="object-contain"
                       />
@@ -285,49 +328,46 @@ export function DemoTopup() {
             </div>
           </div>
 
-          {/* Sidebar */}
-          <div className="lg:sticky lg:top-28">
+          <aside className="lg:sticky lg:top-28">
             <div className="bg-[#161e31] p-8 rounded-[32px] border-t-4 border-t-[#22d3ee] border-x border-b border-[#2a3b56] shadow-2xl">
-              <div className="flex items-center gap-3 mb-8 pb-6 border-b border-[#2a3b56]">
-                <h2 className="text-xl font-black text-white uppercase tracking-tight">
-                  Ringkasan
-                </h2>
-              </div>
-              <div className="space-y-4 mb-10">
-                <div className="flex justify-between text-xs font-bold uppercase tracking-widest">
+              <h2 className="text-xl font-black text-white uppercase tracking-tight mb-8 pb-6 border-b border-[#2a3b56]">
+                Ringkasan
+              </h2>
+              <div className="space-y-4 mb-10 text-xs font-bold uppercase tracking-widest">
+                <div className="flex justify-between">
                   <span className="text-slate-500">Game</span>{" "}
                   <span className="text-white">MLBB</span>
                 </div>
-                <div className="flex justify-between text-xs font-bold uppercase tracking-widest">
+                <div className="flex justify-between">
                   <span className="text-slate-500">Item</span>{" "}
-                  <span className="text-white">{selectedNominal} Diamonds</span>
+                  <span className="text-white">{selectedNominal.label}</span>
                 </div>
-                <div className="pt-6 border-t border-[#2a3b56] flex justify-between items-center">
-                  <span className="font-bold text-white">Total</span>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Metode</span>{" "}
+                  <span className="text-white">{selectedPayment}</span>
+                </div>
+                <div className="pt-6 border-t border-[#2a3b56] flex justify-between items-center text-base">
+                  <span className="text-white">Total</span>
                   <span className="text-2xl font-black text-[#22d3ee] tracking-tighter">
-                    {selectedNominal === "172"
-                      ? "Rp 38.900"
-                      : selectedNominal === "257"
-                        ? "Rp 58.000"
-                        : "Rp 155.500"}
+                    Rp {selectedNominal.price}
                   </span>
                 </div>
               </div>
-              <Button className="w-full bg-linear-to-r from-[#22d3ee] to-[#818cf8] py-8 rounded-2xl text-[#0b1120] font-black text-lg shadow-xl shadow-[#22d3ee]/20 hover:scale-[1.02] transition-transform border-none">
+              <Button className="w-full bg-linear-to-r from-[#22d3ee] to-[#818cf8] py-8 rounded-2xl text-[#0b1120] font-black text-lg shadow-xl hover:scale-[1.02] transition-transform border-none">
                 <Zap size={20} className="mr-2 fill-current" /> BAYAR SEKARANG
               </Button>
             </div>
-          </div>
+          </aside>
         </div>
       </section>
 
-      {/* --- FOOTER --- */}
+      {/* Footer */}
       <footer className="bg-[#161e31] py-16 border-t border-[#2a3b56]">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <p className="text-xs font-bold text-slate-500 tracking-[0.3em] uppercase mb-4">
             &copy; 2026 Drayl Store Indonesia
           </p>
-          <div className="flex justify-center gap-6 opacity-30 grayscale transition-all hover:grayscale-0 hover:opacity-100">
+          <div className="flex justify-center gap-6 opacity-30 grayscale hover:grayscale-0 hover:opacity-100 transition-all">
             <Image
               src="https://img.icons8.com/fluency/96/instagram-new.png"
               width={24}

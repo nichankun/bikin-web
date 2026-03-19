@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge"; // Menggunakan Edge Runtime untuk kecepatan maksimal
+export const runtime = "edge";
 export const alt = "DevPro Digital - Premium Web Development";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";

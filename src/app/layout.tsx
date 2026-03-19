@@ -3,28 +3,25 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-/**
- * ADVANCED PERFORMANCE (Audit Poin 4):
- * Menggunakan Edge Runtime untuk pemrosesan metadata dan streaming yang lebih cepat
- * di seluruh node global (Edge Network).
- */
-export const runtime = "nodejs";
-
+// Mengonfigurasi font lokal/Google dengan variabel CSS untuk mencegah Layout Shift (CLS)
 const geist = Geist({
   subsets: ["latin"],
   variable: "--font-sans",
-  display: "swap", // Mencegah Layout Shift (CLS) dengan swap font
+  display: "swap",
 });
 
+// Menentukan URL dasar secara otomatis (Mendukung environment Vercel)
+const getBaseUrl = () => {
+  if (process.env.NODE_ENV === "development") return "http://localhost:3000";
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return "https://devpro.id"; // Ganti dengan domain asli kamu
+};
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NODE_ENV === "production"
-      ? "https://devpro.id"
-      : "http://localhost:3000",
-  ),
+  metadataBase: new URL(getBaseUrl()),
   title: {
-    default: "DevPro | Jasa Pembuatan Website & Aplikasi Web Premium",
-    template: "%s | DevPro",
+    default: "BikinWeb | Jasa Pembuatan Website & Aplikasi Web Premium",
+    template: "%s | BikinWeb",
   },
   description:
     "Solusi pengembangan sistem digital, Web App, dan Landing Page dengan teknologi Next.js 16 dan Tailwind 4. Hasil terukur, cepat, dan aman.",
@@ -35,34 +32,40 @@ export const metadata: Metadata = {
     "Software House Indonesia",
     "Bikin Web Profesional",
   ],
-  authors: [{ name: "DevPro Team" }],
-  // SEO Advanced: Canonical URL & Alternates
+  authors: [{ name: "BikinWeb Team" }],
+
+  // SEO Advanced: Canonical URL
   alternates: {
     canonical: "/",
   },
+
+  // Open Graph untuk Social Share (WhatsApp, Facebook, LinkedIn)
   openGraph: {
     type: "website",
     locale: "id_ID",
-    url: "https://devpro.id",
+    url: getBaseUrl(),
     siteName: "DevPro Digital",
     title: "DevPro | Jasa Pembuatan Website & Aplikasi Web",
     description: "Sistem Digital Premium, Hasil Terukur.",
     images: [
       {
-        url: "/og-image.jpg", // Fallback jika dynamic OG tidak dimuat
+        url: "/og-bikinweb.svg", // Pastikan file ini ada di folder public/
         width: 1200,
         height: 630,
-        alt: "DevPro Digital Preview",
+        alt: "BikinWeb Digital Preview",
       },
     ],
   },
+
+  // Twitter Card
   twitter: {
     card: "summary_large_image",
     title: "DevPro Digital",
     description: "Jasa Pembuatan Website & Web App Premium.",
-    images: ["/og-image.jpg"],
+    images: ["/og-bikinweb.svg"],
   },
-  // Audit Poin 4: Robot configuration yang lebih spesifik
+
+  // Konfigurasi Robot Crawler Google
   robots: {
     index: true,
     follow: true,
@@ -76,11 +79,12 @@ export const metadata: Metadata = {
   },
 };
 
+// Konfigurasi Viewport diekstrak sesuai dokumentasi Next.js terbaru
 export const viewport: Viewport = {
   themeColor: "#0f172a",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 5, // Mendukung Accessibility (A11Y) untuk zoom user
+  maximumScale: 5, // Mendukung Accessibility (A11y) agar user bisa melakukan zoom
 };
 
 export default function RootLayout({
@@ -91,7 +95,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      suppressHydrationWarning // Mencegah error mismatch saat menggunakan theme atau font variable
+      suppressHydrationWarning // Mencegah error mismatch pada plugin ekstensi browser
       className={cn("scroll-smooth font-sans", geist.variable)}
     >
       <body className="bg-background text-foreground antialiased selection:bg-brand-500 selection:text-white">

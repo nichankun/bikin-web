@@ -1,58 +1,23 @@
-import NextDynamic from "next/dynamic";
-import { Suspense } from "react";
-
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { WhatsappButton } from "@/components/floating/whatsapp-button";
+
+// Import standar: Jauh lebih optimal untuk Server Components di Next.js App Router
 import { HeroSection } from "@/components/sections/hero-section";
-import { Skeleton } from "@/components/ui/skeleton";
+import { StatsSection } from "@/components/sections/stats-section";
+import { WorkflowSection } from "@/components/sections/workflow-section";
+import { PortfolioSection } from "@/components/sections/portfolio-section";
+import { PricingSection } from "@/components/sections/pricing-section";
+import { FaqSection } from "@/components/sections/faq-section";
 
-// BUNDLE OPTIMIZATION: Named Export handling
-const StatsSection = NextDynamic(
-  () =>
-    import("@/components/sections/stats-section").then(
-      (mod) => mod.StatsSection,
-    ),
-  { loading: () => <Skeleton className="h-50 w-full my-10" /> },
-);
-
-const WorkflowSection = NextDynamic(
-  () =>
-    import("@/components/sections/workflow-section").then(
-      (mod) => mod.WorkflowSection,
-    ),
-  { loading: () => <Skeleton className="h-100 w-full my-10" /> },
-);
-
-const PortfolioSection = NextDynamic(
-  () =>
-    import("@/components/sections/portfolio-section").then(
-      (mod) => mod.PortfolioSection,
-    ),
-  { loading: () => <Skeleton className="h-150 w-full my-10 rounded-3xl" /> },
-);
-
-const PricingSection = NextDynamic(
-  () =>
-    import("@/components/sections/pricing-section").then(
-      (mod) => mod.PricingSection,
-    ),
-  { loading: () => <Skeleton className="h-150 w-full my-10" /> },
-);
-
-const FaqSection = NextDynamic(
-  () =>
-    import("@/components/sections/faq-section").then((mod) => mod.FaqSection),
-  { loading: () => <Skeleton className="h-100 w-full my-10" /> },
-);
-
+// Route Segment Config: Halaman dijadikan statis dengan Revalidasi setiap 1 jam (ISR)
 export const dynamic = "force-static";
 export const revalidate = 3600;
 
 export default function Home() {
   /**
    * SEO ADVANCED: Structured Data JSON-LD
-   * Membantu Google mengerti profil bisnis DevPro secara robotik.
+   * Membantu Google mengerti profil bisnis secara robotik.
    */
   const jsonLd = {
     "@context": "https://schema.org",
@@ -80,26 +45,11 @@ export default function Home() {
 
       <main className="overflow-x-hidden min-h-screen">
         <HeroSection />
-
-        <Suspense fallback={<Skeleton className="h-50 w-full" />}>
-          <StatsSection />
-        </Suspense>
-
-        <Suspense fallback={<Skeleton className="h-100 w-full" />}>
-          <WorkflowSection />
-        </Suspense>
-
-        <Suspense fallback={<Skeleton className="h-150 w-full" />}>
-          <PortfolioSection />
-        </Suspense>
-
-        <Suspense fallback={<Skeleton className="h-150 w-full" />}>
-          <PricingSection />
-        </Suspense>
-
-        <Suspense fallback={<Skeleton className="h-100 w-full" />}>
-          <FaqSection />
-        </Suspense>
+        <StatsSection />
+        <WorkflowSection />
+        <PortfolioSection />
+        <PricingSection />
+        <FaqSection />
       </main>
 
       <Footer />

@@ -1,7 +1,44 @@
-"use client";
 import { ScrollAnimation } from "../ui-custom/scroll-animation";
 import { PortfolioCard } from "../ui-custom/portfolio-card";
 
+// 1. Ekstraksi data portofolio agar komponen lebih bersih dan mudah dikelola
+const PORTFOLIO_DATA = [
+  {
+    id: "e-notulen", // ID unik untuk properti key
+    title: "E-Notulen & Arsip Digital",
+    desc: "Sistem manajemen rapat terpusat dengan fitur rekapitulasi dashboard dan pengarsipan untuk instansi.",
+    imageSrc:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
+    badgeText: "Instansi",
+    badgeColor: "bg-white/90 backdrop-blur text-blue-700",
+    demoId: "demo-instansi",
+    delay: 0.1,
+  },
+  {
+    id: "katalog-cafe",
+    title: "Katalog & Reservasi Cafe",
+    desc: "Website landing page elegan dengan menu interaktif dan integrasi langsung ke WhatsApp admin.",
+    imageSrc:
+      "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80",
+    badgeText: "UMKM / F&B",
+    badgeColor: "bg-white/90 backdrop-blur text-orange-600",
+    demoId: "demo-cafe",
+    delay: 0.2,
+  },
+  {
+    id: "topup-game",
+    title: "Platform Top-Up Game",
+    desc: "UI sistem PPOB / Topup otomatis lengkap dengan seleksi nominal dan metode pembayaran QRIS.",
+    imageSrc:
+      "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80",
+    badgeText: "Custom Web App",
+    badgeColor: "bg-brand-500/90 backdrop-blur text-white",
+    demoId: "demo-topup",
+    delay: 0.3,
+  },
+];
+
+// 2. Tidak ada "use client", komponen ini sekarang murni Server Component
 export function PortfolioSection() {
   return (
     <section
@@ -23,33 +60,19 @@ export function PortfolioSection() {
         </ScrollAnimation>
 
         <div className="grid md:grid-cols-3 gap-8">
-          <PortfolioCard
-            title="E-Notulen & Arsip Digital"
-            desc="Sistem manajemen rapat terpusat dengan fitur rekapitulasi dashboard dan pengarsipan untuk instansi."
-            imageSrc="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80"
-            badgeText="Instansi"
-            badgeColor="bg-white/90 backdrop-blur text-blue-700"
-            demoId="demo-instansi"
-            delay={0.1}
-          />
-          <PortfolioCard
-            title="Katalog & Reservasi Cafe"
-            desc="Website landing page elegan dengan menu interaktif dan integrasi langsung ke WhatsApp admin."
-            imageSrc="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80"
-            badgeText="UMKM / F&B"
-            badgeColor="bg-white/90 backdrop-blur text-orange-600"
-            demoId="demo-cafe"
-            delay={0.2}
-          />
-          <PortfolioCard
-            title="Platform Top-Up Game"
-            desc="UI sistem PPOB / Topup otomatis lengkap dengan seleksi nominal dan metode pembayaran QRIS."
-            imageSrc="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80"
-            badgeText="Custom Web App"
-            badgeColor="bg-brand-500/90 backdrop-blur text-white"
-            demoId="demo-topup"
-            delay={0.3}
-          />
+          {/* 3. Melakukan mapping data, kode menjadi sangat singkat */}
+          {PORTFOLIO_DATA.map((item) => (
+            <PortfolioCard
+              key={item.id}
+              title={item.title}
+              desc={item.desc}
+              imageSrc={item.imageSrc}
+              badgeText={item.badgeText}
+              badgeColor={item.badgeColor}
+              demoId={item.demoId}
+              delay={item.delay}
+            />
+          ))}
         </div>
       </div>
     </section>

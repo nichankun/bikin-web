@@ -1,4 +1,6 @@
-"use client";
+import Link from "next/link";
+
+// --- KOMPONEN IKON ---
 const InstagramIcon = ({ size = 20 }: { size?: number }) => (
   <svg
     role="img"
@@ -27,6 +29,27 @@ const FacebookIcon = ({ size = 20 }: { size?: number }) => (
   </svg>
 );
 
+// --- DATA STATIS ---
+const SOCIAL_LINKS = [
+  {
+    href: "https://instagram.com/devpro",
+    icon: InstagramIcon,
+    label: "Instagram",
+  },
+  {
+    href: "https://facebook.com/devpro",
+    icon: FacebookIcon,
+    label: "Facebook",
+  },
+];
+
+const NAV_LINKS = [
+  { name: "Showcase", href: "#portfolio" },
+  { name: "Cara Kerja", href: "#alur" },
+  { name: "Harga", href: "#harga" },
+];
+
+// --- KOMPONEN UTAMA (Server Component) ---
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -34,9 +57,10 @@ export function Footer() {
     <footer className="bg-slate-900 text-slate-400 py-16 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 mb-12">
+          {/* Kolom 1: Profil Brand */}
           <div className="col-span-1 md:col-span-2">
             <div className="font-extrabold text-2xl tracking-tighter text-white mb-6">
-              DevPro<span className="text-brand-500">.</span>
+              BikinWeb<span className="text-brand-500">.</span>
             </div>
             <p className="max-w-sm mb-6 text-sm leading-relaxed">
               Membangun infrastruktur digital berkualitas tinggi untuk bisnis
@@ -44,58 +68,42 @@ export function Footer() {
               performa terbaru 2026.
             </p>
 
+            {/* Social Media Links Mapping */}
             <div className="flex gap-4">
-              <a
-                href="https://instagram.com/devpro"
-                target="_blank"
-                rel="noreferrer"
-                className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-500 hover:text-white transition-all duration-300"
-                aria-label="Instagram"
-              >
-                <InstagramIcon size={20} />
-              </a>
-              <a
-                href="https://facebook.com/devpro"
-                target="_blank"
-                rel="noreferrer"
-                className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-500 hover:text-white transition-all duration-300"
-                aria-label="Facebook"
-              >
-                <FacebookIcon size={20} />
-              </a>
+              {SOCIAL_LINKS.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer" // Perbaikan keamanan (ditambah noopener)
+                  className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-500 hover:text-white transition-all duration-300"
+                  aria-label={social.label}
+                >
+                  <social.icon size={20} />
+                </a>
+              ))}
             </div>
           </div>
 
+          {/* Kolom 2: Navigasi Internal */}
           <div>
             <h4 className="text-white font-bold mb-6">Navigasi</h4>
             <ul className="space-y-4 text-sm">
-              <li>
-                <a
-                  href="#portfolio"
-                  className="hover:text-brand-400 transition-colors"
-                >
-                  Showcase
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#alur"
-                  className="hover:text-brand-400 transition-colors"
-                >
-                  Cara Kerja
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#harga"
-                  className="hover:text-brand-400 transition-colors"
-                >
-                  Harga
-                </a>
-              </li>
+              {NAV_LINKS.map((link) => (
+                <li key={link.name}>
+                  {/* Menggunakan next/link untuk rute internal */}
+                  <Link
+                    href={link.href}
+                    className="hover:text-brand-400 transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
+          {/* Kolom 3: Kontak */}
           <div>
             <h4 className="text-white font-bold mb-6">Kontak</h4>
             <ul className="space-y-4 text-sm">
@@ -115,18 +123,19 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Bagian Bawah Footer */}
         <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] md:text-xs">
           <p>
             © {currentYear} DevPro Digital Agency. Dibuat dengan Next.js 16 &
             Tailwind 4.
           </p>
           <div className="flex gap-6 uppercase font-bold tracking-widest">
-            <a href="#" className="hover:text-white transition-colors">
+            <Link href="#" className="hover:text-white transition-colors">
               Terms of Service
-            </a>
-            <a href="#" className="hover:text-white transition-colors">
+            </Link>
+            <Link href="#" className="hover:text-white transition-colors">
               Privacy Policy
-            </a>
+            </Link>
           </div>
         </div>
       </div>
