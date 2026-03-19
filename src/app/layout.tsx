@@ -44,12 +44,12 @@ export const metadata: Metadata = {
     type: "website",
     locale: "id_ID",
     url: getBaseUrl(),
-    siteName: "DevPro Digital",
-    title: "DevPro | Jasa Pembuatan Website & Aplikasi Web",
+    siteName: "BikinWeb Digital",
+    title: "BikinWeb | Jasa Pembuatan Website & Aplikasi Web",
     description: "Sistem Digital Premium, Hasil Terukur.",
     images: [
       {
-        url: "/og-bikinweb.svg", // Pastikan file ini ada di folder public/
+        url: "/og-image.jpg", // Pastikan file ini ada di folder public/
         width: 1200,
         height: 630,
         alt: "BikinWeb Digital Preview",
@@ -60,9 +60,9 @@ export const metadata: Metadata = {
   // Twitter Card
   twitter: {
     card: "summary_large_image",
-    title: "DevPro Digital",
+    title: "BikinWeb Digital",
     description: "Jasa Pembuatan Website & Web App Premium.",
-    images: ["/og-bikinweb.svg"],
+    images: ["/og-image.jpg"],
   },
 
   // Konfigurasi Robot Crawler Google
